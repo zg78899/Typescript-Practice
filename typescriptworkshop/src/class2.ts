@@ -40,7 +40,7 @@ class KoreanProgrammer extends Korean implements Programmer{
     console.log(mesasge)
   }
   loveKimchi():void{
-    console.log()
+    
   }
   
 }
