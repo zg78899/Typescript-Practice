@@ -3,7 +3,7 @@ var score2 = 2;
 var defaultScore = 0;
 function outer() {
     if (true) {
-        var score = 0;
+        let  score = 0;
     }
     for (var i = 0; i < 3; i++) {
         setTimeout(function () {
@@ -13,3 +13,4 @@ function outer() {
     console.log(score);
 }
 outer();
+

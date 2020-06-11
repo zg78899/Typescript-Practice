@@ -9,13 +9,13 @@ class D<T> implements DB<T>{//제너릭 타입의 interface을 구현하려면  
   }
   get(): T {
     throw new Error("Method not implemented.");
-  } 
+  }
 }
-interface JSONSerialier{
-  serializer():string;
+interface JSONSerialier {
+  serializer(): string;
 }
 
-class LocalDB<T extends JSONSerialier> implements DB<T>{ // 전달받은 값에서 
+class LocalDB<T> extends JSONSerialier implements DB<T>{ // 전달받은 값에서 
   constructor(private localSotrageKey: string) {// 생성자로 localStorageKey를 받음
   }
   add(v: T) {
@@ -28,9 +28,30 @@ class LocalDB<T extends JSONSerialier> implements DB<T>{ // 전달받은 값에�
   }
 }
 
-interface User { name: string };
+// interface User { name: string };
 
-const userDb = new LocalDB<User>('user');
-userDb.add({ name: 'jay' });
-const userA = userDb.get();
-userA.name;
+// const userDb = new LocalDB<User>('user');
+// userDb.add({ name: 'jay' });
+// const userA = userDb.get();
+// userA.name;
+
+
+//조건부 타입
+interface Vegitable {
+  v: string;
+}
+interface Meat {
+  m: string;
+}
+interface Cart2<T> {
+  getItem(): T extends Vegitable ? Vegitable : Meat;
+};
+const cart1: Cart2<Vegitable> = {
+  getItem() {
+    return {
+      v: ''
+    }
+  }
+}
+cart1.getItem();
+

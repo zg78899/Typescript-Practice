@@ -39,3 +39,4 @@ function checkUser(user: User2): UserState {
     return "REJECTED";
   }
 }
+

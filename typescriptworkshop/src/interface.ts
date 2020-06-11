@@ -24,43 +24,43 @@ interface SignUp{
   password:string;
 };
 
-function ajaxSignUp(data:SignUp){
-}
-ajaxSignUp({
-  email
-})
+// function ajaxSignUp(data:SignUp){
+// }
+// ajaxSignUp({
+//   email
+// })
 
 
-interface Cell{
-  row:number;
-  col:number;
-  piece?:Piece;
-  //piece?:Piece; piece는 optional (?)사용 선택 사항이다 
-}  
+// interface Cell{
+//   row:number;
+//   col:number;
+//   piece?:Piece;
+//   //piece?:Piece; piece는 optional (?)사용 선택 사항이다 
+// }  
 
-interface Piece{
-  move(from:Cell,to:Cell):boolean;
-}
+// interface Piece{
+//   move(from:Cell,to:Cell):boolean;
+// }
 
-function createBoard(){
-  const cells :Cell[]=[];
-  for(let row=0;row<4;row++){
-    for(let col=0;col<3;col++){
-      cells.push({
-        row,
-        col
-      })
-    }
-  }
-  return cells;
-}
+// function createBoard(){
+//   const cells :Cell[]=[];
+//   for(let row=0;row<4;row++){
+//     for(let col=0;col<3;col++){
+//       cells.push({
+//         row,
+//         col
+//       })
+//     }
+//   }
+//   return cells;
+// }
 
-const board =createBoard();
- board[0].piece ={
-   move(from:Cell,to:Cell){
-     return true;
-   }
- }
+// const board =createBoard();
+//  board[0].piece ={
+//    move(from:Cell,to:Cell){
+//      return true;
+//    }
+//  }
 
 
  //변수 인터페이스 
