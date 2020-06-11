@@ -138,7 +138,9 @@ function () {
     this._el.classList.add('cell');
   }
 
-  Cell.prototype.put = function (piece) {};
+  Cell.prototype.put = function (piece) {
+    this.piece = piece;
+  };
 
   Cell.prototype.getPiece = function () {
     return this.piece;
@@ -170,25 +172,49 @@ exports.Cell = Cell;
 var Board =
 /** @class */
 function () {
-  function Board() {
+  // HTMLElement는 Cell은 값
+  function Board(upperPlayer, lowerPlayer) {
     this.cells = [];
-    this._el = document.createElement('div');
+    this._el = document.createElement('div'); //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
+
+    this.map = new WeakMap(); //키를 객체로 줄수있다.여기서 map는 htmlElement가 되는것이다.
+
     this._el.className = 'board';
 
-    for (var row = 0; row < 4; row++) {
+    var _loop_1 = function _loop_1(row) {
       var rowEl = document.createElement('div');
       rowEl.className = 'row';
 
-      this._el.appendChild(rowEl);
+      this_1._el.appendChild(rowEl);
 
-      for (var col = 0; col < 3; col++) {
+      var _loop_2 = function _loop_2(col) {
+        var piece = upperPlayer.getPieces().find(function (_a) {
+          var currentPosition = _a.currentPosition;
+          return currentPosition.col === col && currentPosition.row === row;
+        }) || lowerPlayer.getPieces().find(function (_a) {
+          var currentPosition = _a.currentPosition;
+          return currentPosition.col === col && currentPosition.row === row;
+        });
         var cell = new Cell({
           row: row,
           col: col
-        }, null);
-        this.cells.push(cell);
+        }, piece); //null이 였다가 pieces를 받는다.
+
+        this_1.map.set(cell._el, cell); // 셀의 요소에 셀을 넣어준다.
+
+        this_1.cells.push(cell);
         rowEl.appendChild(cell._el);
+      };
+
+      for (var col = 0; col < 3; col++) {
+        _loop_2(col);
       }
+    };
+
+    var this_1 = this;
+
+    for (var row = 0; row < 4; row++) {
+      _loop_1(row);
     }
   }
 
@@ -221,9 +247,9 @@ function () {
     }
   }
 
-  DeadZone.prototype.pust = function (piece) {
+  DeadZone.prototype.put = function (piece) {
     var emptyCell = this.cells.find(function (v) {
-      return v.getPiece() === null;
+      return v.getPiece() == null;
     });
     emptyCell.put(piece);
     emptyCell.render();
@@ -239,7 +265,268 @@ function () {
 }();
 
 exports.DeadZone = DeadZone;
-},{}],"src/Game.ts":[function(require,module,exports) {
+},{}],"src/images/lion.png":[function(require,module,exports) {
+module.exports = "/lion.0a55027b.png";
+},{}],"src/images/chicken.png":[function(require,module,exports) {
+module.exports = "/chicken.3d0d4a2d.png";
+},{}],"src/images/griff.png":[function(require,module,exports) {
+module.exports = "/griff.78de84a7.png";
+},{}],"src/images/elophant.png":[function(require,module,exports) {
+module.exports = "/elophant.66e48f21.png";
+},{}],"src/Piece.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Chick = exports.Griff = exports.Elephant = exports.Lion = exports.MoveResult = void 0;
+
+var Player_1 = require("./Player");
+
+var lion_png_1 = __importDefault(require("./images/lion.png"));
+
+var chicken_png_1 = __importDefault(require("./images/chicken.png"));
+
+var griff_png_1 = __importDefault(require("./images/griff.png"));
+
+var elophant_png_1 = __importDefault(require("./images/elophant.png"));
+
+var MoveResult =
+/** @class */
+function () {
+  function MoveResult(killedPiece) {
+    this.killedPiece = killedPiece;
+  }
+
+  MoveResult.prototype.getkilled = function () {
+    //있으면 killedPiece가 반환 없으면 null반환
+    return this.killedPiece;
+  };
+
+  return MoveResult;
+}();
+
+exports.MoveResult = MoveResult;
+
+var DefaultPiece =
+/** @class */
+function () {
+  function DefaultPiece(ownerType, currentPosition) {
+    this.ownerType = ownerType;
+    this.currentPosition = currentPosition;
+  } //움직임에 대한 메소드 정의(공통적인 움직에 대한 로직만을 정의)- 모든 하위 타입이 재사용을 함
+
+
+  DefaultPiece.prototype.move = function (from, to) {
+    if (!this.canMove(to.postion)) {
+      throw new Error('cannot move!');
+    } //moveResult을 생성해줌 MoveResult안에는 getPiece을 받는다.
+    //만약에 우리가 이동하는 곳인 to에 Piece가 있으면 걔(getPiece)를 준다. 곧 그 Piece는 죽은거다. null이면 죽인게 없다.
+
+
+    var moveResult = new MoveResult(to.getPiece() !== null ? to.getPiece() : null); //현재의cell에서 다른 cell로 this자신을 옮겨주고
+
+    to.put(this); //이전 cell에서 자신을 지운다.
+
+    from.put(null); //그리고 움직인 곳의 좌표자 현재의 위치가 되게 만들어준다.
+
+    this.currentPosition = to.postion;
+    return moveResult;
+  };
+
+  return DefaultPiece;
+}(); // 사자 말 모두 DefaultPpiece를 상속하고 있다.
+
+
+var Lion =
+/** @class */
+function (_super) {
+  __extends(Lion, _super);
+
+  function Lion() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  } //각각의 canMove을 통해 특정 방향 어디로 움직일수있는지
+  //사자는 상하 좌우 
+
+
+  Lion.prototype.canMove = function (pos) {
+    var canMove = pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col || pos.col === this.currentPosition.col + 1 && pos.row === this.currentPosition.row || pos.col === this.currentPosition.col - 1 && pos.row === this.currentPosition.row || pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col + 1 || pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col - 1 || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col + 1 || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col - 1;
+    return canMove;
+  };
+
+  Lion.prototype.render = function () {
+    return "<img class ='piece " + this.ownerType + "' src=" + lion_png_1.default + " width=\"90%\" height=\"90%\"/>";
+  };
+
+  return Lion;
+}(DefaultPiece);
+
+exports.Lion = Lion; //코끼리 말
+
+var Elephant =
+/** @class */
+function (_super) {
+  __extends(Elephant, _super);
+
+  function Elephant() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  } // 대각선 이동가능
+
+
+  Elephant.prototype.canMove = function (pos) {
+    return pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col + 1 || pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col - 1 || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col + 1 || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col - 1;
+  };
+
+  Elephant.prototype.render = function () {
+    return "<img class=\"piece " + this.ownerType + "\" src=" + elophant_png_1.default + " width=\"90%\" height=\"90%\"/>";
+  };
+
+  return Elephant;
+}(DefaultPiece);
+
+exports.Elephant = Elephant; //기린 말
+
+var Griff =
+/** @class */
+function (_super) {
+  __extends(Griff, _super);
+
+  function Griff() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  Griff.prototype.canMove = function (pos) {
+    return pos.row === this.currentPosition.row + 1 && pos.col === this.currentPosition.col || pos.row === this.currentPosition.row - 1 && pos.col === this.currentPosition.col || pos.col === this.currentPosition.col + 1 && pos.row === this.currentPosition.row || pos.col === this.currentPosition.col - 1 && pos.row === this.currentPosition.row;
+  };
+
+  Griff.prototype.render = function () {
+    return "<img class=\"piece " + this.ownerType + "\" src=\"" + griff_png_1.default + "\" width=\"90%\" height=\"90%\"/>";
+  };
+
+  return Griff;
+}(DefaultPiece);
+
+exports.Griff = Griff; //닭 말
+
+var Chick =
+/** @class */
+function (_super) {
+  __extends(Chick, _super);
+
+  function Chick() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  } // 앞으로만 이동가능
+
+
+  Chick.prototype.canMove = function (pos) {
+    //UPPER는 위로 가로 LOWER는 내려가게 설정
+    return this.currentPosition.row + (this.ownerType === Player_1.PlayerType.UPPER ? +1 : -1) === pos.row;
+  };
+
+  Chick.prototype.render = function () {
+    return "<img class=\"piece " + this.ownerType + "\" src =" + chicken_png_1.default + " width=\"90%\" height=\"90%\"/>";
+  };
+
+  return Chick;
+}(DefaultPiece);
+
+exports.Chick = Chick;
+},{"./Player":"src/Player.ts","./images/lion.png":"src/images/lion.png","./images/chicken.png":"src/images/chicken.png","./images/griff.png":"src/images/griff.png","./images/elophant.png":"src/images/elophant.png"}],"src/Player.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Player = exports.PlayerType = void 0;
+
+var Piece_1 = require("./Piece");
+
+var PlayerType;
+
+(function (PlayerType) {
+  PlayerType["UPPER"] = "UPPER";
+  PlayerType["LOWER"] = "LOWER";
+})(PlayerType = exports.PlayerType || (exports.PlayerType = {}));
+
+var Player =
+/** @class */
+function () {
+  function Player(type) {
+    this.type = type; //해당 플레이어가 자신의 타입에 맞게끔 piece를 가지도록 설정
+    //if비교문을 통해서 type이 PlayerType.UPPER인지 LOWER인지 구분
+
+    if (type === PlayerType.UPPER) {
+      this.pieces = [new Piece_1.Griff(PlayerType.UPPER, {
+        row: 0,
+        col: 0
+      }), new Piece_1.Lion(PlayerType.UPPER, {
+        row: 0,
+        col: 1
+      }), new Piece_1.Elephant(PlayerType.UPPER, {
+        row: 0,
+        col: 2
+      }), new Piece_1.Chick(PlayerType.UPPER, {
+        row: 1,
+        col: 1
+      })];
+    } else {
+      this.pieces = [new Piece_1.Elephant(PlayerType.LOWER, {
+        row: 3,
+        col: 0
+      }), new Piece_1.Lion(PlayerType.LOWER, {
+        row: 3,
+        col: 1
+      }), new Piece_1.Griff(PlayerType.LOWER, {
+        row: 3,
+        col: 2
+      }), new Piece_1.Chick(PlayerType.LOWER, {
+        row: 2,
+        col: 1
+      })];
+    }
+  }
+
+  Player.prototype.getPieces = function () {
+    return this.pieces;
+  };
+
+  return Player;
+}();
+
+exports.Player = Player;
+},{"./Piece":"src/Piece.ts"}],"src/Game.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -249,23 +536,162 @@ exports.Game = void 0;
 
 var Board_1 = require("./Board");
 
+var Player_1 = require("./Player");
+
+require("./Piece");
+
+var Piece_1 = require("./Piece");
+
 var Game =
 /** @class */
 function () {
   function Game() {
-    this.board = new Board_1.Board();
+    var _this = this; // 턴처리
+
+
+    this.turn = 0; //게임에 대한 정보 선택
+
+    this.gameInfoEl = document.querySelector('.alert'); //게임의 시작과 끝
+
+    this.state = 'STARTED'; //string union으로 처리하고 기본값은 STARTED로 설정
+    //위쪽 플레이어와 아랫쪽 플레이어 생성
+
+    this.upperPlayer = new Player_1.Player(Player_1.PlayerType.UPPER);
+    this.lowerPlayer = new Player_1.Player(Player_1.PlayerType.LOWER);
+    this.board = new Board_1.Board(this.upperPlayer, this.lowerPlayer);
     this.upperDeadZone = new Board_1.DeadZone('upper');
     this.lowerDeadZone = new Board_1.DeadZone('lower');
     var boardContainer = document.querySelector('.board-container');
     boardContainer.firstChild.remove();
-    boardContainer.appendChild(this.board._el);
-  }
+    boardContainer.appendChild(this.board._el); //게임의 시작은 무조건 upperPlayer가 시작하는 것으로 정의
+
+    this.currentPlayer = this.upperPlayer; //board에 말들을 렌더를 호출해준다.
+
+    this.board.render();
+    this.renderInfo(); //board에 이벤트 
+
+    this.board._el.addEventListener('click', function (e) {
+      if (_this.state === 'ENDED') {
+        return false;
+      }
+
+      if (e.target instanceof HTMLElement) {
+        //타입 가드 e.target은 HTMLElement의  인스턴스가 된다.
+        //cellElement는 화면에 그려지는 html셀 요소이다.
+        //그러나 우릴가 필요한 것은 Piece타입이다. Piece타입에서 move 또는 어떤 행위를 한다 , 즉 Piece타입의 객체를 알아야한다.
+        var cellEl = void 0;
+
+        if (e.target.classList.contains('cell')) {
+          cellEl = e.target;
+        } else if (e.target.classList.contains('piece')) {
+          cellEl = e.target.parentElement; // parentElement가 cell인 것이다.
+        } else {
+          return false;
+        }
+
+        var cell = _this.board.map.get(cellEl); //현재 플레이아 piece와 + 현재 선택된 셀이 있을때 움직일수있게 해준다.
+        // 현재 유저일때는 내것을 계속 선택할수 있게 해준다.
+
+
+        if (_this.isCurrentUserPiece(cell)) {
+          //select라는 메소드를 만들어서 현재의 셀을 선택을 하게 만들어주고
+          _this.select(cell);
+
+          return false;
+        } //선택된 셀이 있을때
+
+
+        if (_this.selectedCell) {
+          //셀을 이동시킴
+          _this.move(cell); //턴을 바꿔줌;
+
+
+          _this.changeTurn();
+        }
+      }
+    });
+  } //셀을 선택 할 때
+
+
+  Game.prototype.select = function (cell) {
+    //셀에 가져올 말이 없으면 return 
+    if (cell.getPiece() == null) {
+      return;
+    } //자신의 말일때만 선택이 되어야한다.자신의 말이 아닌 다른 말을 선택한다면 return;
+
+
+    if (cell.getPiece().ownerType !== this.currentPlayer.type) {
+      return;
+    } // 선택된 셀이있으면
+
+
+    if (this.selectedCell) {
+      // 선택된 셀을 선택 못하게 해주고 
+      this.selectedCell.deactive(); //렌더를 통해서 active된것을 없애준 다음에
+
+      this.selectedCell.render();
+    } //셀에 할당을 해주고
+
+
+    this.selectedCell = cell; //이 셀을 active 처리해준다.
+
+    cell.active(); // 그리고 렌더
+
+    cell.render();
+  }; //현재 currentUser의 Piece을 알 수 있게 된다.
+
+
+  Game.prototype.isCurrentUserPiece = function (cell) {
+    return cell != null && cell.getPiece() != null && cell.getPiece().ownerType === this.currentPlayer.type;
+  };
+
+  Game.prototype.renderInfo = function (extraMessage) {
+    //누구의 턴이 고 몇번째 인지 
+    this.gameInfoEl.innerHTML = "#" + (this.turn + 1) + "\uD134 " + this.currentPlayer.type + " \uCC28\uB840 " + (extraMessage ? '| ' + extraMessage : '');
+  };
+
+  Game.prototype.move = function (cell) {
+    this.selectedCell.deactive();
+    var killed = this.selectedCell.getPiece().move(this.selectedCell, cell).getkilled(); // selectedCell은 우리가 클릭한 셀로 바꾼다.
+
+    this.selectedCell = cell;
+
+    if (killed) {
+      if (killed.ownerType === Player_1.PlayerType.UPPER) {
+        this.lowerDeadZone.put(killed);
+      } else {
+        this.upperDeadZone.put(killed);
+      }
+
+      if (killed instanceof Piece_1.Lion) {
+        this.state = 'ENDED';
+      }
+    }
+  };
+
+  Game.prototype.changeTurn = function () {
+    this.selectedCell.deactive();
+    this.selectedCell = null;
+
+    if (this.state === 'ENDED') {
+      this.renderInfo("GAME " + (Player_1.PlayerType.UPPER || Player_1.PlayerType.LOWER) + " WIN!!");
+    } else {
+      //턴을 하나 증가 시켜주고 
+      this.turn += 1; //현재의 플레이어를 바꿔 줌;
+
+      this.currentPlayer = this.currentPlayer === this.lowerPlayer ? this.upperPlayer : this.lowerPlayer;
+      this.renderInfo();
+    } //매 턴이 끝날때 마다 화면에 바뀐 turn이 렌더 되게끔한다.
+
+
+    this.board.render();
+  };
 
   return Game;
 }();
 
 exports.Game = Game;
-},{"./Board":"src/Board.ts"}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./Board":"src/Board.ts","./Player":"src/Player.ts","./Piece":"src/Piece.ts"}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -385,7 +811,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49671" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60210" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
