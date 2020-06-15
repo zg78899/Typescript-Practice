@@ -1,6 +1,5 @@
 import { Board, DeadZone, Cell } from './Board';
 import { Player, PlayerType } from './Player';
-import './Piece';
 import { Lion, Piece } from './Piece';
 
 
@@ -22,20 +21,26 @@ export class Game {
   readonly upperPlayer = new Player(PlayerType.UPPER);
   readonly lowerPlayer = new Player(PlayerType.LOWER);
 
+  //game에 Board을 생성한다. 
   readonly board = new Board(this.upperPlayer, this.lowerPlayer);
 
+  //game에 DeadZone을 생성한다. 
   readonly upperDeadZone = new DeadZone('upper');
   readonly lowerDeadZone = new DeadZone('lower');
 
 
   constructor() {
+    //실제 Board을 board conatiainer에 넣어야한다 .
     const boardContainer = document.querySelector('.board-container');
     boardContainer.firstChild.remove();
     boardContainer.appendChild(this.board._el);
+
+
     //게임의 시작은 무조건 upperPlayer가 시작하는 것으로 정의
     this.currentPlayer = this.upperPlayer;
     //board에 말들을 렌더를 호출해준다.
     this.board.render();
+    //진행 중인 게임에 대한 정보를 표시하는 함수
     this.renderInfo();
 
     //board에 이벤트 
@@ -131,10 +136,11 @@ export class Game {
 
   changeTurn() {
     this.selectedCell.deactive();
+    //선택이 된 곳에 선택이 못되게 설정
     this.selectedCell = null;
 
     if (this.state === 'ENDED') {
-        this.renderInfo(`GAME ${PlayerType.UPPER  || PlayerType.LOWER} WIN!!`);
+        this.renderInfo(`GAME ${PlayerType.UPPER || PlayerType.LOWER} WIN!!`);
     } else {
       //턴을 하나 증가 시켜주고 
       this.turn += 1;
@@ -142,7 +148,8 @@ export class Game {
       this.currentPlayer = (this.currentPlayer === this.lowerPlayer) ? this.upperPlayer : this.lowerPlayer;
       this.renderInfo();
     }
-    //매 턴이 끝날때 마다 화면에 바뀐 turn이 렌더 되게끔한다.
+    //매 턴이 끝날때 마다 화면에 바뀐 turn의 positiond이 렌더 되게끔한다.
+    //매 턴이 지날때 마다 화면에 다시 그려진다.
     this.board.render();
   }
 }

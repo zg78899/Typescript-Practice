@@ -123,24 +123,28 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DeadZone = exports.Board = exports.Cell = void 0;
+exports.DeadZone = exports.Board = exports.Cell = void 0; //말들은 각각 하나의 셀 위에 올라가게 된다. 
 
 var Cell =
 /** @class */
 function () {
-  function Cell(postion, // 현재의 위치를 나타냄
+  function Cell(postion, // 현재의 위치를 나타냄(x,y의 좌표)
   piece) {
     this.postion = postion;
-    this.piece = piece;
-    this.isActive = false;
-    this._el = document.createElement('div');
+    this.piece = piece; //선택된 셀
+
+    this.isActive = false; //실제 셀을 element로 나타내준다.
+
+    this._el = document.createElement('div'); //현재의 셀에 클래스이름에 cell을 더해준다.  
 
     this._el.classList.add('cell');
-  }
+  } //셀은 말을 올릴 수 있다. 
+
 
   Cell.prototype.put = function (piece) {
     this.piece = piece;
-  };
+  }; //현재 올라가 있는 말을 가져온다. 
+
 
   Cell.prototype.getPiece = function () {
     return this.piece;
@@ -152,14 +156,16 @@ function () {
 
   Cell.prototype.deactive = function () {
     this.isActive = false;
-  };
+  }; //각 각의 셀마다 렌더링 할 수 있다 
+
 
   Cell.prototype.render = function () {
     if (this.isActive) {
       this._el.classList.add('active');
     } else {
       this._el.classList.remove('active');
-    }
+    } //el요소에 시렞 말이 올라가 있으면 말의 렌더링
+
 
     this._el.innerHTML = this.piece ? this.piece.render() : '';
   };
@@ -167,13 +173,14 @@ function () {
   return Cell;
 }();
 
-exports.Cell = Cell;
+exports.Cell = Cell; //보드
 
 var Board =
 /** @class */
 function () {
   // HTMLElement는 Cell은 값
   function Board(upperPlayer, lowerPlayer) {
+    // 각 셀들
     this.cells = [];
     this._el = document.createElement('div'); //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
 
@@ -194,7 +201,8 @@ function () {
         }) || lowerPlayer.getPieces().find(function (_a) {
           var currentPosition = _a.currentPosition;
           return currentPosition.col === col && currentPosition.row === row;
-        });
+        }); //Cell들에 대한 생성자 함수를 호출, postion(row,col)와 piece 정의 들어가게 된다.
+
         var cell = new Cell({
           row: row,
           col: col
@@ -216,7 +224,8 @@ function () {
     for (var row = 0; row < 4; row++) {
       _loop_1(row);
     }
-  }
+  } //Board또한 각각의 셀들에 대한 render을 해주어야한다. 그래야 셀이 그려진다. 
+
 
   Board.prototype.render = function () {
     this.cells.forEach(function (v) {
@@ -227,7 +236,7 @@ function () {
   return Board;
 }();
 
-exports.Board = Board;
+exports.Board = Board; // 죽은 말들을 모아 두는 곳
 
 var DeadZone =
 /** @class */
@@ -235,7 +244,7 @@ function () {
   function DeadZone(type) {
     this.type = type;
     this.cells = [];
-    this.deadzoneEl = document.getElementById(this.type + "_deadzone").querySelector('.card-body');
+    this.deadzoneEl = document.getElementById(this.type + "_deadzone").querySelector('.card-body'); //말의 개수가 4개 이상을 둘 수 없다. 
 
     for (var col = 0; col < 4; col++) {
       var cell = new Cell({
@@ -245,7 +254,8 @@ function () {
       this.cells.push(cell);
       this.deadzoneEl.appendChild(cell._el);
     }
-  }
+  } //말들이 죽으면 들어갈수 있게 
+
 
   DeadZone.prototype.put = function (piece) {
     var emptyCell = this.cells.find(function (v) {
@@ -321,14 +331,17 @@ var chicken_png_1 = __importDefault(require("./images/chicken.png"));
 
 var griff_png_1 = __importDefault(require("./images/griff.png"));
 
-var elophant_png_1 = __importDefault(require("./images/elophant.png"));
+var elophant_png_1 = __importDefault(require("./images/elophant.png")); //말을 움직였을때의 결과는 특정말을 죽이거나 안죽이거나
+//타입을 클래스로 정의함
+
 
 var MoveResult =
 /** @class */
 function () {
   function MoveResult(killedPiece) {
     this.killedPiece = killedPiece;
-  }
+  } //죽인 말들을 가져올수 있게 getter로 메서드를 지정
+
 
   MoveResult.prototype.getkilled = function () {
     //있으면 killedPiece가 반환 없으면 null반환
@@ -483,11 +496,13 @@ var PlayerType;
 var Player =
 /** @class */
 function () {
+  //Player가 생성될때 player의 종류를 전달 받는다. 
+  //실제 속성으로 가지게 하기 위해서 
   function Player(type) {
     this.type = type; //해당 플레이어가 자신의 타입에 맞게끔 piece를 가지도록 설정
     //if비교문을 통해서 type이 PlayerType.UPPER인지 LOWER인지 구분
 
-    if (type === PlayerType.UPPER) {
+    if (type == PlayerType.UPPER) {
       this.pieces = [new Piece_1.Griff(PlayerType.UPPER, {
         row: 0,
         col: 0
@@ -538,8 +553,6 @@ var Board_1 = require("./Board");
 
 var Player_1 = require("./Player");
 
-require("./Piece");
-
 var Piece_1 = require("./Piece");
 
 var Game =
@@ -557,17 +570,21 @@ function () {
     //위쪽 플레이어와 아랫쪽 플레이어 생성
 
     this.upperPlayer = new Player_1.Player(Player_1.PlayerType.UPPER);
-    this.lowerPlayer = new Player_1.Player(Player_1.PlayerType.LOWER);
-    this.board = new Board_1.Board(this.upperPlayer, this.lowerPlayer);
+    this.lowerPlayer = new Player_1.Player(Player_1.PlayerType.LOWER); //game에 Board을 생성한다. 
+
+    this.board = new Board_1.Board(this.upperPlayer, this.lowerPlayer); //game에 DeadZone을 생성한다. 
+
     this.upperDeadZone = new Board_1.DeadZone('upper');
-    this.lowerDeadZone = new Board_1.DeadZone('lower');
+    this.lowerDeadZone = new Board_1.DeadZone('lower'); //실제 Board을 board conatiainer에 넣어야한다 .
+
     var boardContainer = document.querySelector('.board-container');
     boardContainer.firstChild.remove();
     boardContainer.appendChild(this.board._el); //게임의 시작은 무조건 upperPlayer가 시작하는 것으로 정의
 
     this.currentPlayer = this.upperPlayer; //board에 말들을 렌더를 호출해준다.
 
-    this.board.render();
+    this.board.render(); //진행 중인 게임에 대한 정보를 표시하는 함수
+
     this.renderInfo(); //board에 이벤트 
 
     this.board._el.addEventListener('click', function (e) {
@@ -670,7 +687,8 @@ function () {
   };
 
   Game.prototype.changeTurn = function () {
-    this.selectedCell.deactive();
+    this.selectedCell.deactive(); //선택이 된 곳에 선택이 못되게 설정
+
     this.selectedCell = null;
 
     if (this.state === 'ENDED') {
@@ -681,7 +699,8 @@ function () {
 
       this.currentPlayer = this.currentPlayer === this.lowerPlayer ? this.upperPlayer : this.lowerPlayer;
       this.renderInfo();
-    } //매 턴이 끝날때 마다 화면에 바뀐 turn이 렌더 되게끔한다.
+    } //매 턴이 끝날때 마다 화면에 바뀐 turn의 positiond이 렌더 되게끔한다.
+    //매 턴이 지날때 마다 화면에 다시 그려진다.
 
 
     this.board.render();
@@ -811,7 +830,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60210" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51171" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

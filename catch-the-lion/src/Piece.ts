@@ -5,14 +5,17 @@ import chickenImage from './images/chicken.png';
 import griffImage from './images/griff.png';
 import elophantImage from './images/elophant.png';
 
-
+//말을 움직였을때의 결과는 특정말을 죽이거나 안죽이거나
+//타입을 클래스로 정의함
 export class MoveResult{
   constructor(private killedPiece : Piece){}
+  //죽인 말들을 가져올수 있게 getter로 메서드를 지정
   getkilled(){
     //있으면 killedPiece가 반환 없으면 null반환
     return this.killedPiece;
   }
 }
+
 
 //게임을 말을 의미함
 export interface Piece {
@@ -22,7 +25,7 @@ export interface Piece {
   currentPosition:Position;
   //말 한 셀에서 다른 셀로 이동(메서드)
   //to에 해당하는 말에 다른 말이 올라오면 이전의 말은 죽은것
-  move(from: Cell, to: Cell):MoveResult;
+  move(from: Cell, to: Cell): MoveResult;
   render(): string;
 }
 
