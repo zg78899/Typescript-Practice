@@ -1,5 +1,5 @@
 import { Cell ,Position} from "./Board";
-import { PlayerType } from "./Player";
+import { PlayerType, Player } from "./Player";
 import loinImage from './images/lion.png';
 import chickenImage from './images/chicken.png';
 import griffImage from './images/griff.png';
@@ -28,6 +28,7 @@ export interface Piece {
   move(from: Cell, to: Cell): MoveResult;
   render(): string;
 }
+ //추상클래스를 통해 구현
 
 abstract class DefaultPiece implements Piece{
   
@@ -117,4 +118,3 @@ export class Chick extends DefaultPiece{
     return `<img class="piece ${this.ownerType}" src =${chickenImage} width="90%" height="90%"/>`
   }
 }
-

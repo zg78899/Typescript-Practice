@@ -1,5 +1,5 @@
 import { Piece } from './Piece';
-import { Player } from './Player';
+import { Player, PlayerType } from './Player';
 
 export interface Position {
   row: number;
@@ -25,7 +25,7 @@ export class Cell {
     this.piece = piece;
   }
   //현재 올라가 있는 말을 가져온다. 
-  getPiece() { 
+  getPiece() {
     return this.piece;
   }
   active() {
@@ -36,6 +36,9 @@ export class Cell {
   }
   //각 각의 셀마다 렌더링 할 수 있다 
   render() {
+    console.log(Player.type);
+    console.log(Player);
+    console.log(PlayerType);
     if (this.isActive) {
       this._el.classList.add('active');
     } else {
@@ -62,7 +65,7 @@ export class Board {
       const rowEl = document.createElement('div');
       rowEl.className = 'row';
       this._el.appendChild(rowEl);
-      
+
       for (let col = 0; col < 3; col++) {
         const piece =
           upperPlayer.getPieces().find(({ currentPosition }) => {
@@ -74,7 +77,7 @@ export class Board {
 
         //Cell들에 대한 생성자 함수를 호출, postion(row,col)와 piece 정의 들어가게 된다.
         const cell = new Cell({ row, col }, piece);//null이 였다가 pieces를 받는다.
-        
+
         this.map.set(cell._el, cell); // 셀의 요소에 셀을 넣어준다.
         this.cells.push(cell);
         rowEl.appendChild(cell._el);

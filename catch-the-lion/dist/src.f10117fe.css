@@ -10291,7 +10291,7 @@ a.text-dark:hover, a.text-dark:focus {
   width: 100px;
   height: 100px;
   flex: 0 100px;
-  border: 1px dashed black;
+  border: 1px dashed gray;
   text-align: center;
   line-height: 96px;
 }
@@ -10304,9 +10304,8 @@ a.text-dark:hover, a.text-dark:focus {
 .cell.active {
   background-color: aqua;
 }
-
-.cell.active.upper {
-  background-color: rebeccapurple;
+.cell.active.upper{
+  background-color: maroon;
 }
 
 .row {
