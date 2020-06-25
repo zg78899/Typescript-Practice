@@ -21,13 +21,13 @@
 .cell:nth-child(1),
 .cell:nth-child(2) {
   border-right: none;
-}
+}  
 
-.cell.active {
-  background-color: aqua;
+.cell.active.LOWER {
+  background-color: mediumslateblue;
 }
-.cell.active.upper{
-  background-color: maroon;
+.cell.active.UPPER{
+  background-color: sandybrown;
 }
 
 .row {

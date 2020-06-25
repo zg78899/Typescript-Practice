@@ -117,7 +117,169 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/images/lion.png":[function(require,module,exports) {
+})({"src/Board.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DeadZone = exports.Board = exports.Cell = void 0; //말들은 각각 하나의 셀 위에 올라가게 된다. 
+
+var Cell =
+/** @class */
+function () {
+  function Cell(postion, // 현재의 위치를 나타냄(x,y의 좌표)
+  piece) {
+    this.postion = postion;
+    this.piece = piece; //선택된 셀
+
+    this.isActive = false; //실제 셀을 element로 나타내준다.
+
+    this._el = document.createElement('div'); //현재의 셀에 클래스이름에 cell을 더해준다.  
+
+    this._el.classList.add('cell');
+  } //셀은 말을 올릴 수 있다. 
+
+
+  Cell.prototype.put = function (piece) {
+    this.piece = piece;
+  }; //현재 올라가 있는 말을 가져온다. 
+
+
+  Cell.prototype.getPiece = function () {
+    return this.piece;
+  };
+
+  Cell.prototype.active = function () {
+    this.isActive = true;
+  };
+
+  Cell.prototype.deactive = function () {
+    this.isActive = false;
+  }; //각 각의 셀마다 렌더링 할 수 있다 
+
+
+  Cell.prototype.render = function () {
+    console.log(this.getPiece());
+
+    if (this.isActive) {
+      this._el.classList.add('active', "" + (this.getPiece().ownerType === 'UPPER' ? 'UPPER' : 'LOWER'));
+    } else {
+      console.log(this._el.classList);
+
+      this._el.classList.remove('active', 'UPPER', 'LOWER');
+    } //el요소에 시렞 말이 올라가 있으면 말의 렌더링
+
+
+    this._el.innerHTML = this.piece ? this.piece.render() : '';
+  };
+
+  return Cell;
+}();
+
+exports.Cell = Cell; //보드
+
+var Board =
+/** @class */
+function () {
+  // HTMLElement는 Cell은 값
+  function Board(upperPlayer, lowerPlayer) {
+    // 각 셀들
+    this.cells = [];
+    this._el = document.createElement('div'); //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
+
+    this.map = new WeakMap(); //키를 객체로 줄수있다.여기서 map는 htmlElement가 되는것이다.
+
+    this._el.className = 'board';
+
+    var _loop_1 = function _loop_1(row) {
+      var rowEl = document.createElement('div');
+      rowEl.className = 'row';
+
+      this_1._el.appendChild(rowEl);
+
+      var _loop_2 = function _loop_2(col) {
+        var piece = upperPlayer.getPieces().find(function (_a) {
+          var currentPosition = _a.currentPosition;
+          return currentPosition.col === col && currentPosition.row === row;
+        }) || lowerPlayer.getPieces().find(function (_a) {
+          var currentPosition = _a.currentPosition;
+          return currentPosition.col === col && currentPosition.row === row;
+        }); //Cell들에 대한 생성자 함수를 호출, postion(row,col)와 piece 정의 들어가게 된다.
+
+        var cell = new Cell({
+          row: row,
+          col: col
+        }, piece); //null이 였다가 pieces를 받는다.
+
+        this_1.map.set(cell._el, cell); // 셀의 요소에 셀을 넣어준다.
+
+        this_1.cells.push(cell);
+        rowEl.appendChild(cell._el);
+      };
+
+      for (var col = 0; col < 3; col++) {
+        _loop_2(col);
+      }
+    };
+
+    var this_1 = this;
+
+    for (var row = 0; row < 4; row++) {
+      _loop_1(row);
+    }
+  } //Board또한 각각의 셀들에 대한 render을 해주어야한다. 그래야 셀이 그려진다. 
+
+
+  Board.prototype.render = function () {
+    this.cells.forEach(function (v) {
+      return v.render();
+    });
+  };
+
+  return Board;
+}();
+
+exports.Board = Board; // 죽은 말들을 모아 두는 곳
+
+var DeadZone =
+/** @class */
+function () {
+  function DeadZone(type) {
+    this.type = type;
+    this.cells = [];
+    this.deadzoneEl = document.getElementById(this.type + "_deadzone").querySelector('.card-body'); //말의 개수가 4개 이상을 둘 수 없다. 
+
+    for (var col = 0; col < 4; col++) {
+      var cell = new Cell({
+        col: col,
+        row: 0
+      }, null);
+      this.cells.push(cell);
+      this.deadzoneEl.appendChild(cell._el);
+    }
+  } //말들이 죽으면 들어갈수 있게 
+
+
+  DeadZone.prototype.put = function (piece) {
+    var emptyCell = this.cells.find(function (v) {
+      return v.getPiece() == null;
+    });
+    emptyCell.put(piece);
+    emptyCell.render();
+  };
+
+  DeadZone.prototype.render = function () {
+    this.cells.forEach(function (v) {
+      return v.render();
+    });
+  };
+
+  return DeadZone;
+}();
+
+exports.DeadZone = DeadZone;
+},{}],"src/images/lion.png":[function(require,module,exports) {
 module.exports = "/lion.0a55027b.png";
 },{}],"src/images/chicken.png":[function(require,module,exports) {
 module.exports = "/chicken.3d0d4a2d.png";
@@ -383,172 +545,7 @@ function () {
 }();
 
 exports.Player = Player;
-},{"./Piece":"src/Piece.ts"}],"src/Board.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DeadZone = exports.Board = exports.Cell = void 0;
-
-var Player_1 = require("./Player"); //말들은 각각 하나의 셀 위에 올라가게 된다. 
-
-
-var Cell =
-/** @class */
-function () {
-  function Cell(postion, // 현재의 위치를 나타냄(x,y의 좌표)
-  piece) {
-    this.postion = postion;
-    this.piece = piece; //선택된 셀
-
-    this.isActive = false; //실제 셀을 element로 나타내준다.
-
-    this._el = document.createElement('div'); //현재의 셀에 클래스이름에 cell을 더해준다.  
-
-    this._el.classList.add('cell');
-  } //셀은 말을 올릴 수 있다. 
-
-
-  Cell.prototype.put = function (piece) {
-    this.piece = piece;
-  }; //현재 올라가 있는 말을 가져온다. 
-
-
-  Cell.prototype.getPiece = function () {
-    return this.piece;
-  };
-
-  Cell.prototype.active = function () {
-    this.isActive = true;
-  };
-
-  Cell.prototype.deactive = function () {
-    this.isActive = false;
-  }; //각 각의 셀마다 렌더링 할 수 있다 
-
-
-  Cell.prototype.render = function () {
-    console.log(Player_1.Player.type);
-    console.log(Player_1.Player);
-    console.log(Player_1.PlayerType);
-
-    if (this.isActive) {
-      this._el.classList.add('active');
-    } else {
-      this._el.classList.remove('active');
-    } //el요소에 시렞 말이 올라가 있으면 말의 렌더링
-
-
-    this._el.innerHTML = this.piece ? this.piece.render() : '';
-  };
-
-  return Cell;
-}();
-
-exports.Cell = Cell; //보드
-
-var Board =
-/** @class */
-function () {
-  // HTMLElement는 Cell은 값
-  function Board(upperPlayer, lowerPlayer) {
-    // 각 셀들
-    this.cells = [];
-    this._el = document.createElement('div'); //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
-
-    this.map = new WeakMap(); //키를 객체로 줄수있다.여기서 map는 htmlElement가 되는것이다.
-
-    this._el.className = 'board';
-
-    var _loop_1 = function _loop_1(row) {
-      var rowEl = document.createElement('div');
-      rowEl.className = 'row';
-
-      this_1._el.appendChild(rowEl);
-
-      var _loop_2 = function _loop_2(col) {
-        var piece = upperPlayer.getPieces().find(function (_a) {
-          var currentPosition = _a.currentPosition;
-          return currentPosition.col === col && currentPosition.row === row;
-        }) || lowerPlayer.getPieces().find(function (_a) {
-          var currentPosition = _a.currentPosition;
-          return currentPosition.col === col && currentPosition.row === row;
-        }); //Cell들에 대한 생성자 함수를 호출, postion(row,col)와 piece 정의 들어가게 된다.
-
-        var cell = new Cell({
-          row: row,
-          col: col
-        }, piece); //null이 였다가 pieces를 받는다.
-
-        this_1.map.set(cell._el, cell); // 셀의 요소에 셀을 넣어준다.
-
-        this_1.cells.push(cell);
-        rowEl.appendChild(cell._el);
-      };
-
-      for (var col = 0; col < 3; col++) {
-        _loop_2(col);
-      }
-    };
-
-    var this_1 = this;
-
-    for (var row = 0; row < 4; row++) {
-      _loop_1(row);
-    }
-  } //Board또한 각각의 셀들에 대한 render을 해주어야한다. 그래야 셀이 그려진다. 
-
-
-  Board.prototype.render = function () {
-    this.cells.forEach(function (v) {
-      return v.render();
-    });
-  };
-
-  return Board;
-}();
-
-exports.Board = Board; // 죽은 말들을 모아 두는 곳
-
-var DeadZone =
-/** @class */
-function () {
-  function DeadZone(type) {
-    this.type = type;
-    this.cells = [];
-    this.deadzoneEl = document.getElementById(this.type + "_deadzone").querySelector('.card-body'); //말의 개수가 4개 이상을 둘 수 없다. 
-
-    for (var col = 0; col < 4; col++) {
-      var cell = new Cell({
-        col: col,
-        row: 0
-      }, null);
-      this.cells.push(cell);
-      this.deadzoneEl.appendChild(cell._el);
-    }
-  } //말들이 죽으면 들어갈수 있게 
-
-
-  DeadZone.prototype.put = function (piece) {
-    var emptyCell = this.cells.find(function (v) {
-      return v.getPiece() == null;
-    });
-    emptyCell.put(piece);
-    emptyCell.render();
-  };
-
-  DeadZone.prototype.render = function () {
-    this.cells.forEach(function (v) {
-      return v.render();
-    });
-  };
-
-  return DeadZone;
-}();
-
-exports.DeadZone = DeadZone;
-},{"./Player":"src/Player.ts"}],"src/Game.ts":[function(require,module,exports) {
+},{"./Piece":"src/Piece.ts"}],"src/Game.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -841,7 +838,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53811" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62885" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
