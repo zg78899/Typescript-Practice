@@ -15,3 +15,14 @@ let nullableNumber = null;
 let color = 'red';
 color = 'yellow';
 // color = 'green';//에러가 발생하게 됨
+function sum(x, y) {
+    return x + y;
+}
+;
+const result = sum(1, 2);
+//배열의 안에 있는 모든 숫자 더하기
+function sumArray(number) {
+    return number.reduce((acc, current) => acc + current, 0);
+}
+const total = sumArray([1, 2, 3, 4, 5]);
+console.log(total);
