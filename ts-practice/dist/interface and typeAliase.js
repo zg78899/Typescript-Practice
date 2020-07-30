@@ -10,7 +10,11 @@ class Circle {
     }
 }
 class Rectangle {
+    // width:number;
+    // height:number;
     constructor(width, height) {
+        this.width = width;
+        this.height = height;
         this.width = width;
         this.height = height;
     }
@@ -19,11 +23,14 @@ class Rectangle {
     }
 }
 const circle = new Circle(5);
+circle.radius = 5;
 const rectangle = new Rectangle(10, 20);
 const shapes = [circle, rectangle];
 shapes.forEach(shape => {
     console.log(shape.getArea());
 });
-// function getCircleArea(circle:Circle){
-//   return circle.getArea();
-// }
+;
+const person = {
+    name: 'rlawogjs',
+    age: 20
+};
