@@ -33,3 +33,13 @@ function sumArray(number:number[]):number{
 const total = sumArray([1,2,3,4,5]);
 console.log(total);
 
+function returnNothing(): string | number{
+console.log('어쩌고 저쩌고');
+return 'asdasd';
+// return 12314
+}
+returnNothing(); //함수의 리턴 타입을 설정해 주지 않으면 void 타입을 가지게 된다.
+
+
+
+

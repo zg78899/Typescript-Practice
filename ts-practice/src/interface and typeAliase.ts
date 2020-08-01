@@ -46,8 +46,40 @@ interface Person{
   name:string,
   age ?:number; // age 값이 있을 수도 없을 수도 있다. 
 };
-
+interface Developer extends Person {
+  skills:string[]
+ };
+ 
 const person:Person = {
   name:'rlawogjs',
-  age:20
+  age:20,
 };
+
+const expert:Developer ={
+  name:'김재헌',
+  age:20,
+  skills:['javascript']
+}
+
+//typeAliase //위의 인터페이스와 동일한 결과
+ type Person = {
+   name:string,
+   age?:number
+ };
+ type Developer = Person &{ //타입을 상속하겠다.
+  skills:string[]
+ };
+ const person :Person  = {
+   name:'김개발',
+   age:20
+ };
+ const expert :Developer = {
+   name:'김개발',
+   skills:['JAVASCRIPT']
+ };
+
+ type People = Person[];
+ const people:People = [person,expert];
+
+ type Color  = 'red'| 'orange' |'yellow';
+ const color:Color  = 'red';
