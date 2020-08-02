@@ -10,4 +10,3 @@ const rootReducer = combineReducers({
 export default rootReducer;
 //rootReducer에서 내보내는 함수의 리턴 타입을 설정해줌
 export type RootState = ReturnType<typeof rootReducer>
-

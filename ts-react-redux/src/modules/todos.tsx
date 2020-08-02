@@ -1,3 +1,4 @@
+//typesafe Action 라이브러리를 사용하면 액션 타입,액션 생성함수,리듀서를 더욱 편리하게 사용할 수 있다. 
 //액션 타입
 const ADD_TODO = 'todos/ADD_TODO'as const;
 const TOGGLE_TODO = 'todos/TOGGLE_TODO'as const;
@@ -55,8 +56,3 @@ function todos(state: TodoState = initialState, action: TodoAction): TodoState {
   }
 }
 export default todos;
-
-
-
-
-

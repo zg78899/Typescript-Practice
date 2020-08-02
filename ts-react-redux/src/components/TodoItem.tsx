@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Todo } from '../modules/todos';
+import todos, { Todo } from '../modules/todos';
 
 type TodoItemProps ={
   todo:Todo;
@@ -38,4 +38,3 @@ const removeStyle:CSSProperties = {
   )
 }
 export default TodoItem;
-

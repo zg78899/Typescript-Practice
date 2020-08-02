@@ -54,6 +54,10 @@ export class Board {
   // 각 셀들
   cells: Cell[] = [];
 
+
+
+  
+
   _el: HTMLElement = document.createElement('div');
   //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
   map: WeakMap<HTMLElement, Cell> = new WeakMap()//키를 객체로 줄수있다.여기서 map는 htmlElement가 되는것이다.

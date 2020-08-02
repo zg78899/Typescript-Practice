@@ -24,4 +24,3 @@ function TodoList({ todos, onToggle, onRemove }: TodoListProps) {
   )
 }
 export default TodoList;
-
