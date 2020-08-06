@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-
 export async function getUserProfile(username:string){
  const response = await axios.get<GithubProfile>(`https://api.github.com/users/${username}`);
  return response.data;
  //axios.get의 타입을 설정해 주지않으면 return Promsie의 타입은 any이다.
  //그렇기에 return 타입을 제네릭으로 <GithubProfile>해준다. 
 }
-
 export type GithubProfile = {
   login:               string;
   id:                  number;

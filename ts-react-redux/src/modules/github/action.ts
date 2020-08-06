@@ -1,6 +1,6 @@
 //Thunk함수를 만들어 줄것 이다.이때 필요한 것은 시작할 때 요청할 때 실패 했을때의 코드들
 
-import { createStandardAction } from "typesafe-actions/dist/deprecated/create-standard-action";
+// import { createStandardAction } from "typesafe-actions/dist/deprecated/create-standard-action";
 import {createAsyncAction} from 'typesafe-actions'
 import { GithubProfile } from "../../api/github";
 import { AxiosError } from "axios";
@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 export const GET_USER_PROFILE = 'github/GET_USER_PROFILE';
 export const GET_USER_PROFILE_SUCCESS  = 'github/GET_USER_PROFILE_SUCCESS';
 export const GET_USER_PROFILE_ERROR = 'github/GET_USER_PROFILE_ERROR';
+
 
 //액션 생성함수
 //페이로드의 타입 제네릭으로 설정
@@ -22,5 +23,4 @@ export const getUserProfileAsync = createAsyncAction(
   GET_USER_PROFILE,
   GET_USER_PROFILE_SUCCESS,
   GET_USER_PROFILE_ERROR,
-
 )<undefined,GithubProfile,AxiosError>(); //페이로드의 타입을 설정해 준다.

@@ -115,7 +115,7 @@
 //reducer파일에 있는 것을 그대로 가져와서 사용하겠다는 의미
 export {default} from './reducer';
 export * from './actions';//actions 파일에 있는 모든 것들을 불러와서 내보내겠다.
-export * from './types';
+export * from     './types';
 //만약의 경우 action의 개수가 계속 증가하거나 많아 진다면
 //다음과 같이 파일을 쪼개서 관리하는 것이 복잡성,유지보수에 도움을 준다.
 //한 폴더에 나눠서 작성을 하는것이 여러 폴더로 나눠서 작성하는 것 보다. 추천함
