@@ -19,8 +19,18 @@ export const GET_USER_PROFILE_ERROR = 'github/GET_USER_PROFILE_ERROR';
 
 //createAsyncAction사용
 //액션 생성함수 작성
+// export const getUserProfileAsync = createAsyncAction(
+//   GET_USER_PROFILE,
+//   GET_USER_PROFILE_SUCCESS,
+//   GET_USER_PROFILE_ERROR,
+// )<undefined,GithubProfile,AxiosError>(); //페이로드의 타입을 설정해 준다.
+
+//redux-saga에서는 GET_USER_PROFILE의 페이로드가 필요함
+//어떠한 사용자 계정을 조회해야 할지 알아야하기 때문에 페이로드 string을 넣어줌
 export const getUserProfileAsync = createAsyncAction(
   GET_USER_PROFILE,
   GET_USER_PROFILE_SUCCESS,
   GET_USER_PROFILE_ERROR,
-)<undefined,GithubProfile,AxiosError>(); //페이로드의 타입을 설정해 준다.
+)<string,GithubProfile,AxiosError>(); //페이로드의 타입을 설정해 준다.
+
+ 

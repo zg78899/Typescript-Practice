@@ -2,7 +2,7 @@ import { createReducer, action } from 'typesafe-actions'
 // import { GithubProfile } from '../../api/github';
 import { GithubState, GithubAction } from './types';
 import { GET_USER_PROFILE, GET_USER_PROFILE_SUCCESS, GET_USER_PROFILE_ERROR, getUserProfileAsync } from './action';
-import { asyncState, createAsyncReducer, transformToArray } from '../../lib/reducerUtils';
+import { asyncState, createAsyncReducer,transformToArray} from '../../lib/reducerUtils';
 
 // const initialState: GithubState = {
 //   userProfile: {
@@ -12,10 +12,10 @@ import { asyncState, createAsyncReducer, transformToArray } from '../../lib/redu
 //   }
 // };
 
+// asyncState 유틸 함수를 사용한 초기값
 const initialState: GithubState = {
   userProfile:asyncState.initial()
 };
-
 
 //thunk함수의 reudcer을 작성해 준다.
 // const github = createReducer<GithubState,GithubAction>(initialState,{
@@ -45,7 +45,7 @@ const initialState: GithubState = {
 //   })
 // });
 
-//CreateAync 유틸 함수를 사용한 리듀서
+//asyncState 유틸 함수를 사용한 리듀서
 // const github = createReducer<GithubState,GithubAction>(initialState,{
 //   [GET_USER_PROFILE]:state=>({
 //     ...state,
@@ -61,9 +61,22 @@ const initialState: GithubState = {
 //   })
 // });
 
-const github = createReducer<GithubState, GithubAction>(initialState).handleAction(
+//유킬 함수 적용
+// const github = createReducer<GithubState, GithubAction>
+// (initialState).handleAction(
+//   [
+//   getUserProfileAsync.request,
+//   getUserProfileAsync.success,
+//   getUserProfileAsync.failure
+//   ],
+//   createAsyncReducer(getUserProfileAsync,'userProfile')
+// );
+
+// 리팩토링 
+// //createReducer의 handleAction을 사용하면 여러개의 액션을 하나의 reducer로 묶는것이 가능하다.
+const github = createReducer<GithubState, GithubAction>
+(initialState).handleAction(
   transformToArray(getUserProfileAsync),
   createAsyncReducer(getUserProfileAsync, 'userProfile')
 );
-
-  export default github;
+export default github;

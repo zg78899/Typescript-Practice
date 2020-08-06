@@ -8,10 +8,9 @@ export type AsyncState<T, E = any> = {
   data: T | null;
   error: E | null;
 }
-
 // const sample : AsyncState<number>={}
 
-//redcer유틸 함수
+//유틸 함수가 들어있는 객체가 완성됨
 export const asyncState = {
   //함수로 작성을 해줌
   initial: <T, E>(initialData?: T): AsyncState<T, E> => ({
@@ -41,7 +40,7 @@ export const asyncState = {
 //   b:2,
 //   c:3
 // };
-//  type key = keyof typeof state;
+//  type key = keyof typeof state; //key= "a |b |c"가 됨
 
 type AnyAsyncActionCreator = AsyncActionCreator<any, any, any>;
 
@@ -64,7 +63,7 @@ export function createAsyncReducer<
     //   asyncActionCreator.success,
     //   asyncActionCreator.failure,
     // ].map(getType); //해당 액션 생성함수들의 타입을 생성한다 
-    //userProfile이 키가 된다
+    //userProfile이 [key]가 된다
     const [request, success, failure] = transformToArray(asyncActionCreator).map(getType);
     switch (action.type) {
       case request:
@@ -85,12 +84,7 @@ export function createAsyncReducer<
       default:
         return state;
     }
-    //getType을 사용하면 해당 액션의 타입을 추출 할 수 있게된다
-    // const type = getType(asyncActionCreator.request())
   }
 }
-
-
-
-
-
+//getType을 사용하면 해당 액션의 타입을 추출 할 수 있게된다
+    // const type = getType(asyncActionCreator.request())

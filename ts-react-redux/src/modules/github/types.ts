@@ -17,6 +17,7 @@ export type GithubAction =ActionType<typeof action>;
 // };
 
 //위 타입 유틸 함수 사용 위의 함수 한 줄 처리 가능
+// 첫번째 제네릭에는 성공했을 때의 타입, 두번째는 실패했을때 Error 일때의 타입을 넣어줌
 export type GithubState = {
   userProfile:AsyncState<GithubProfile,Error>
 }
