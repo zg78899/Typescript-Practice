@@ -16,6 +16,7 @@ function GithubProfileLoader(){
   // const onSubmitUsername  = (username:string) =>{
   //   dispatch(getUserProfileThunk(username));
   // }
+  
   //reudx-saga사용
   const onSubmitUsername= (username:string)=>{
     dispatch(getUserProfileAsync.request(username))

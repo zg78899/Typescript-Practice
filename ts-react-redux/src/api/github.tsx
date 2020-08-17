@@ -6,6 +6,7 @@ export async function getUserProfile(username:string){
  //axios.get의 타입을 설정해 주지않으면 return Promsie의 타입은 any이다.
  //그렇기에 return 타입을 제네릭으로 <GithubProfile>해준다. 
 }
+
 export type GithubProfile = {
   login:               string;
   id:                  number;
@@ -29,7 +30,7 @@ export type GithubProfile = {
   company:             null;
   blog:                string;
   location:            null;
-  email:               null;
+  email:               null | string;
   hireable:            null;
   bio:                 null;
   twitter_username:    null;

@@ -5,7 +5,6 @@ import { AsyncState } from '../../lib/reducerUtils';
 
 export type GithubAction =ActionType<typeof action>;
 
-
 //리듀서에서 관리할 상태의 타입
 //성공했을때  GithunProfile 실패시 Error
 // export type GithubState = {
