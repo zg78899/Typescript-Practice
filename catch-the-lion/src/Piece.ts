@@ -118,3 +118,7 @@ export class Chick extends DefaultPiece{
     return `<img class="piece ${this.ownerType}" src =${chickenImage} width="90%" height="90%"/>`
   }
 }
+
+
+
+

@@ -54,7 +54,7 @@ export class Game {
         //cellElement는 화면에 그려지는 html셀 요소이다.
         //그러나 우릴가 필요한 것은 Piece타입이다. Piece타입에서 move 또는 어떤 행위를 한다 , 즉 Piece타입의 객체를 알아야한다.
         let cellEl: HTMLElement;
-        console.log(cellEl);
+        console.log('cellEL', cellEl);
         if (e.target.classList.contains('cell')) {
           cellEl = e.target;
         } else if (e.target.classList.contains('piece')) {
@@ -93,6 +93,7 @@ export class Game {
     if (cell.getPiece().ownerType !== this.currentPlayer.type) {
       return;
     }
+    console.log('SELECT', this.selectedCell);
     // 선택된 셀이있으면
     if (this.selectedCell) {
       // 선택된 셀을 선택 못하게 해주고 
@@ -102,6 +103,7 @@ export class Game {
     }
     //셀에 할당을 해주고
     this.selectedCell = cell;
+    console.log('SELECT', this.selectedCell);
     //이 셀을 active 처리해준다.
     cell.active();
     // 그리고 렌더
@@ -119,10 +121,12 @@ export class Game {
   }
 
   move(cell: Cell) {
+    console.log('MOVE', this.selectedCell);
     this.selectedCell.deactive();
     const killed = this.selectedCell.getPiece().move(this.selectedCell, cell).getkilled();
     // selectedCell은 우리가 클릭한 셀로 바꾼다.
     this.selectedCell = cell;
+    console.log('MOVE', this.selectedCell);
 
     //죽인 말이 있다면 
     if (killed) {
@@ -140,8 +144,11 @@ export class Game {
   }
 
   changeTurn() {
+    console.log('CHANGE-TURN', this.selectedCell);
     this.selectedCell.deactive();
+
     //선택이 된 곳에 선택이 못되게 설정
+    console.log('CHANGE-TURN', this.selectedCell)
     this.selectedCell = null;
 
     if (this.state === 'ENDED') {
@@ -158,5 +165,3 @@ export class Game {
     this.board.render();
   }
 }
-
-

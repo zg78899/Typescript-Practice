@@ -16,3 +16,5 @@ const userDb = new LocalDB<User>('user');
 userDb.add({ name : 'jay'});
 const userA = userDb.get();
 userA.name;
+
+

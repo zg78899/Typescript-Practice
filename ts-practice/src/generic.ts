@@ -58,4 +58,3 @@ queue.enQueue(4);
 while(queue.length >0){
   console.log(queue.deQueue());
 }
-

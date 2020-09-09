@@ -8,7 +8,7 @@ export interface Position {
 
 //말들은 각각 하나의 셀 위에 올라가게 된다. 
 export class Cell {
-  private currentPlayer:Player;
+  private currentPlayer: Player;
   //선택된 셀
   private isActive = false;
   //실제 셀을 element로 나타내준다.
@@ -37,13 +37,12 @@ export class Cell {
   }
   //각 각의 셀마다 렌더링 할 수 있다 
   render() {
-    
-    console.log(this.getPiece())
+    console.log('borad',this.getPiece())
     if (this.isActive) {
-      this._el.classList.add('active',`${this.getPiece().ownerType === 'UPPER' ? 'UPPER':'LOWER'}`);
+      this._el.classList.add('active', `${this.getPiece().ownerType === 'UPPER' ? 'UPPER' : 'LOWER'}`);
     } else {
-      console.log(this._el.classList)
-      this._el.classList.remove('active','UPPER','LOWER');
+      console.log('board',this._el.classList)
+      this._el.classList.remove('active', 'UPPER', 'LOWER');
     }
     //el요소에 시렞 말이 올라가 있으면 말의 렌더링
     this._el.innerHTML = (this.piece) ? this.piece.render() : '';
@@ -53,10 +52,6 @@ export class Cell {
 export class Board {
   // 각 셀들
   cells: Cell[] = [];
-
-
-
-  
 
   _el: HTMLElement = document.createElement('div');
   //키가 htmlelement가 되고 거기에 Cell이 들어가게된다.
@@ -123,3 +118,6 @@ export class DeadZone {
   }
 
 }
+
+
+

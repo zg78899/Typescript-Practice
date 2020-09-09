@@ -160,12 +160,12 @@ function () {
 
 
   Cell.prototype.render = function () {
-    console.log(this.getPiece());
+    console.log('borad', this.getPiece());
 
     if (this.isActive) {
       this._el.classList.add('active', "" + (this.getPiece().ownerType === 'UPPER' ? 'UPPER' : 'LOWER'));
     } else {
-      console.log(this._el.classList);
+      console.log('board', this._el.classList);
 
       this._el.classList.remove('active', 'UPPER', 'LOWER');
     } //el요소에 시렞 말이 올라가 있으면 말의 렌더링
@@ -602,7 +602,7 @@ function () {
         //cellElement는 화면에 그려지는 html셀 요소이다.
         //그러나 우릴가 필요한 것은 Piece타입이다. Piece타입에서 move 또는 어떤 행위를 한다 , 즉 Piece타입의 객체를 알아야한다.
         var cellEl = void 0;
-        console.log(cellEl);
+        console.log('cellEL', cellEl);
 
         if (e.target.classList.contains('cell')) {
           cellEl = e.target;
@@ -646,8 +646,9 @@ function () {
 
     if (cell.getPiece().ownerType !== this.currentPlayer.type) {
       return;
-    } // 선택된 셀이있으면
+    }
 
+    console.log('SELECT', this.selectedCell); // 선택된 셀이있으면
 
     if (this.selectedCell) {
       // 선택된 셀을 선택 못하게 해주고 
@@ -657,7 +658,8 @@ function () {
     } //셀에 할당을 해주고
 
 
-    this.selectedCell = cell; //이 셀을 active 처리해준다.
+    this.selectedCell = cell;
+    console.log('SELECT', this.selectedCell); //이 셀을 active 처리해준다.
 
     cell.active(); // 그리고 렌더
 
@@ -675,10 +677,12 @@ function () {
   };
 
   Game.prototype.move = function (cell) {
+    console.log('MOVE', this.selectedCell);
     this.selectedCell.deactive();
     var killed = this.selectedCell.getPiece().move(this.selectedCell, cell).getkilled(); // selectedCell은 우리가 클릭한 셀로 바꾼다.
 
-    this.selectedCell = cell; //죽인 말이 있다면 
+    this.selectedCell = cell;
+    console.log('MOVE', this.selectedCell); //죽인 말이 있다면 
 
     if (killed) {
       if (killed.ownerType === Player_1.PlayerType.UPPER) {
@@ -695,8 +699,10 @@ function () {
   };
 
   Game.prototype.changeTurn = function () {
+    console.log('CHANGE-TURN', this.selectedCell);
     this.selectedCell.deactive(); //선택이 된 곳에 선택이 못되게 설정
 
+    console.log('CHANGE-TURN', this.selectedCell);
     this.selectedCell = null;
 
     if (this.state === 'ENDED') {
@@ -838,7 +844,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62885" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64303" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -31,22 +31,3 @@ helloMethod = function(msg:string){
 // p[3]
 // p.name
 // p.dfsf
-
-interface Props {
-  name:string;
-  [key:string]:string;
-};
-
-const key:keyof Props;
-interface User{
-  name:string;
-  age:number;
-  hello(msg:string):void;
-}
-let keyOfUser :keyof User;
-keyOfUser = "age";
-
-let helloWorld :User("hello");
-helloWorld = function (msg:string){
-  
-}

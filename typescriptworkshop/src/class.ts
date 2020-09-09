@@ -35,7 +35,7 @@ class PromotionCart extends Cart{
   }
 }
 //인스턴스르 생성
-const cart2 = new PromotionCart({name:'john'});
+const cart2 = new PromotionCart({name:'JOhn'});
 cart2.addPromotion();// Cart에서 상속한 put메소드
 // cart2.user
 const cartJohn = new Cart({name:'John'});
@@ -46,3 +46,4 @@ const artJay = new Cart({name:'Jay'});
 //2. privete와 protected는 인스턴스에서 점근이 불가능하다.그러나 클래스의 내부에서 접근이 가능하다.
 //3. private와 protected의 차이점은 private는 선언된 클래스의 내부에서만 사용이 가능하고 상속된 하위클래스를 비롯한 인스턴스에서 점근이 불가능하다.
 //4. protected는 선언된 클래스의 내부와 상속하고 있는 자신의 하위 클래스에서 상속이 가능하다. 
+
