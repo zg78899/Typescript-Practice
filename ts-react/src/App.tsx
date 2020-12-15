@@ -6,18 +6,19 @@ import Counter from './Counter';
 import MyForm from './MyForm';
 import ReducerSample from './ReducerSample';
 import { SampleProvider } from './SampleContext';
+import Greetings from './Greetings';
 
 
 function App() {
   // const onClick =(name:string)=>{
   //   console.log(name);
   // }
-
+  
   // const onSubmit = (form:{name:string,description:string})=>{
   //   console.log(form);
   // } 
 
-  
+ 
   return (
     // <MyForm onSubmit={onSubmit}/>
     // <Counter/>
@@ -25,6 +26,7 @@ function App() {
       <ReducerSample/>
     </SampleProvider>
   //  <Greetings name="리액트" onClick={onClick} />
+  
   );
 }
 

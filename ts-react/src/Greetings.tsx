@@ -7,6 +7,8 @@ type GreetingProps = {
   optional?: string,
   onClick:(name:string)=>void
   
+  
+  
 }
 //따로 children이라고 설정을 안해줘도 된다.
 //const Greetings = React.Fc<GreetingProps>({name,mark,optional,onClcik,children})=>{} 
@@ -18,6 +20,8 @@ function Greetings({ name, mark, optional ,onClick}: GreetingProps) {
   // if(!array)return null;
   // array.map //이런 식으로 코딩을 해야한다.
 const handleClick = () =>onClick(name)
+
+
 
   return (
     <div>

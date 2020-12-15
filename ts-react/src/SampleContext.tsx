@@ -65,6 +65,7 @@ type SampleDispatch = Dispatch<Action>;
 //우리는 context를 편하게 관리하기 위해서 상태를 관리하는 reducer와 dispatch르 관리하는 reudcer로 나누어 사용하겠다.
 //1.상태만을 관리할 context
 const SampleStateContext = createContext<State|null>(null);
+
 //2. disaptch
 const SampleDispatchContext = createContext< SampleDispatch | null>(null);
 
@@ -99,3 +100,97 @@ export function useSampleDispatch(){
  if(!dispatch) throw new Error(`Cannot find SampleProvider`);
   return dispatch;
 }
+
+
+
+
+
+
+type Color = 'red' |'yellow' | 'orange';
+
+type State = {
+  count:number;
+  text:string;
+  color:Color;
+  isGood:boolean;
+
+}
+type Action = 
+  {type:'SET_COUNT',count:number} 
+| {type:'SET_TEXT',text:string} 
+| {type:'SET_COLOR',color:Color} 
+|{type:'TOGGLE_GOOD'};
+
+ // 파라미터의 타입과 리턴 타입
+function reducer(state:State,action:Action):State{
+switch(action.type){
+  case 'SET_COUNT':
+    return{
+      ...state,
+      count:action.count
+    };
+  case 'SET_TEXT':
+    return {
+      ...state,
+      text:action.text
+    }
+  case 'SET_COLOR':
+    return{
+      ...state,
+      color:action.color
+    }
+   case 'TOGGLE_GOOD':
+     return {
+       ...state,
+       isGood:!state.isGood
+     }
+
+  default:
+    throw new Error(`UnHandled action Error`);
+}
+}
+type SamepleDispatch  = Dispatch<Action>;
+
+const sampleStateContext = createContext<State|null>(null);
+const sampleDispatchContext = createContext<SamepleDispatch | null>(null);
+
+
+type SampleProviderProps = {
+  children:React.ReactNode
+}
+export function SampleProvider({children}:SampleProviderProps){
+
+  const [state,dispatch] = useReducer(reducer,{
+    count:0,
+    text:'hello',
+    color:'red',
+    idGood:true
+  });
+
+  return (
+    <sampleStateContext.Provider value={state}>
+      <sampleStateContext.Provider value={dispatch}>
+        {children}
+      </sampleStateContext.Provider>
+    </sampleStateContext.Provider>
+  )
+}
+//custom hook
+export function useSampleState(){
+  const state = useContext(sampleStateContext); // return type이 state |null
+  if(!state) throw new Error(`unHandled state Error`);
+  return state;
+}
+
+export function useSampleDispatch(){
+  const dispatch = useContext(sampleDispatchContext);
+  if(!dispatch) throw new Error(`unHandled dispatch Error`);
+  return dispatch;
+}
+
+
+
+
+
+
+
