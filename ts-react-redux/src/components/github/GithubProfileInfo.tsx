@@ -22,3 +22,6 @@ function GithubProfileinfo({ name, thumbnail, bio, blog }: GithubProfileProps) {
 }
 
 export default GithubProfileinfo;
+
+import React from 'react';
+

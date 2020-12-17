@@ -12,10 +12,45 @@ import { asyncState, createAsyncReducer,transformToArray} from '../../lib/reduce
 //   }
 // };
 
+// const initialState:GithubState = {
+//   userProfile:{
+//     loading:false,
+//     data: null,
+//     error:null
+//   }
+// }
+
 // asyncState 유틸 함수를 사용한 초기값
 const initialState: GithubState = {
   userProfile:asyncState.initial()
 };
+
+const github = createReducer<GithubState,GithubAction>(initialState,{
+[GET_USER_PROFILE]:(state,action)=> ({
+  ...state,
+  userProfile:{
+    loading:true,
+    error:null,
+    data:null
+  }
+}),
+[GET_USER_PROFILE_SUCCESS]:(state,action)=>({
+  ...state,
+  userProfile:{
+    loading:false,
+    error:null,
+    data:action.payload
+  }
+}),
+[GET_USER_PROFILE_ERROR]:(state,action)=> ({
+  ...state,
+  userProfile:{
+    loading:false,
+    error:action.payload,
+    data:null
+  }
+})
+});
 
 //thunk함수의 reudcer을 작성해 준다.
 // const github = createReducer<GithubState,GithubAction>(initialState,{

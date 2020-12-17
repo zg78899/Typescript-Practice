@@ -7,6 +7,8 @@ export async function getUserProfile(username:string){
  //그렇기에 return 타입을 제네릭으로 <GithubProfile>해준다. 
 }
 
+
+
 export type GithubProfile = {
   login:               string;
   id:                  number;

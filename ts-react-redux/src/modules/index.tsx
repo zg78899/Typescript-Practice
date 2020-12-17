@@ -18,3 +18,15 @@ export type RootState = ReturnType<typeof rootReducer>
 export function* rootSaga(){
   yield all([githubSaga()]);
 }
+
+
+
+// import {combineReducer} from 'redux';
+
+// import rootReducer = combineReducers({
+//   counter,
+//   todos
+// })
+// export default rootReducer;
+// // rootReducer 함수에서 만든 리턴 타입을 반환해준다.
+// export type RootState = ReturnType<typeof rootReducer>;

@@ -1,4 +1,5 @@
 import {ActionType} from 'typesafe-actions';
+//action / actino 생성자 함수에 있는 모든 것들이 여기로 불려움
 import * as actions from './actions';
 
 export type TodosAction = ActionType<typeof actions>;

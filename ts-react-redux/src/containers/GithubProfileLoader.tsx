@@ -4,6 +4,7 @@ import GithubProfileinfo from '../components/github/GithubProfileInfo';
 import { useSelector, useDispatch } from 'react-redux';
 import {RootState} from '../modules/index';
 import { getUserProfileThunk, getUserProfileAsync } from '../modules/github';
+import { isFunctionDeclaration } from 'typescript';
 
 
 
@@ -32,3 +33,4 @@ function GithubProfileLoader(){
   )
 }
 export default GithubProfileLoader;
+

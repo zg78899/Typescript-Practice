@@ -111,24 +111,36 @@ type TodoAction = ActionType<typeof actions>
 //initialState는 type TodoState의 빈 배열이다. 
  const initialState: TodoState = [];
 
+ //typesafe-actinos을 사용한 todos리듀서 생성
+ 
+ const todos = createReducer<TodoState,TodoAction>(initialState,{
+  [ADD_TODO]:(state,action)=>state.concat({
+    ...action.payload,
+    done:false
+  }),
+  [TOGGLE_TOOD]:(state,action) =>state.map(todo=>todo.id === action.payload ? {...todo,done:!todo.done}:todo),
+  [REMOVE_TODO]:(state,action) =>state.filter(todo=> todo.id !== action.payload)
+
+ })
+
+//  function todos(state:TodoState = initialState,action:TodoAction):TodoState{
+//  switch(action.type){
+//    case ADD_TODO:
+//      return state.concat({
+//        id:action.payload.id,
+//        text:action.payload.text,
+//        done:false
+//      });
+//    case TOGGLE_TODO:
+//      return state.map(todo=> todo.id === action.payload ? {...todo,done:!todo.done}:todo)  
+//    case REMOVE_TODO:
+//      return state.filter(todo=> todo.id !== action.payload) //일치 한다면 사라짐
+//    default:
+//      throw new Error(`Unahandled type Error`);
+//   }
+//  }
 
 
- function todos(state:TodoState = initialState,action:TodoAction):TodoState{
- switch(action.type){
-   case ADD_TODO:
-     return state.concat({
-       id:action.payload.id,
-       text:action.payload.text,
-       done:false
-     });
-   case TOGGLE_TODO:
-     return state.map(todo=> todo.id === action.payload ? {...todo,done:!todo.done}:todo)  
-   case REMOVE_TODO:
-     return state.filter(todo=> todo.id !== action.payload) //일치 한다면 사라짐
-   default:
-     throw new Error(`Unahandled type Error`);
- }
- }
  export default todos;
 
 

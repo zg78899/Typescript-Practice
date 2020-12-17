@@ -22,3 +22,33 @@ function CounterContainer(){
   )
 }
 export default CounterContainer;
+
+
+
+import React from 'react';
+
+function CounterContainer(){
+  const count = useSelector((state:RootState)=>state.counter.count);
+  const dispatch = useDispatch();
+
+  const onIncrease = ()=>{
+    dispatch(increase());
+  }
+  const onDecrease = ()=>{
+    dispatch(decrease());
+  }
+  const onIncreaseBy = (diff:number)=>{
+    dispatch(increaseBy(diff))
+  }
+
+  return (
+    <Counter
+    count={count}
+    onIncerase = {onIncrease}
+    onDecerase={onDecrease}
+    onIncreaseBy = {onIncreaseBy}
+    />
+  )
+  
+}
+export default CounterContainer;

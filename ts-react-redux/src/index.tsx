@@ -6,8 +6,13 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import {createStore,applyMiddleware} from 'redux';
 import rootReducer,{rootSaga} from './modules/index';
-// import Thunk from 'redux-thunk'
+import Thunk from 'redux-thunk'
 import createSagaMiddleware from 'redux-saga';
+
+//1. {Provider} from 'react-redux'
+//2 {createStore} from 'redux'
+//3. const store = createStore(rootReducer);
+//4.App 컴포넌트 Provider로 감싸준다. 그 후 store = {store} 넣어줌
 
 
 const sagaMiddleware = createSagaMiddleware();
