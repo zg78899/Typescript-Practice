@@ -35,55 +35,9 @@ export default function createAsyncThunk<
   }
 };
 
-
 // function sum(a:number,b:number){
 //   return a+b;
 // }
 // type P = Parameters<typeof sum>;
 //이렇게 되면 P는 2개의 number 타입을 가지는 배열이 됨
 
-type AnyAsyncActionCreator = AsyncActionCreator<any,any,any>;
-type AnyPromiseCreator = (...params:any[]) =>Promise<any>
-
-
-export default function createAsynThunk<A extends AnyAsyncActionCreator,F extends AnyPromiseCreator>(asyncactionCreator, promsieCreator){
-  type Param = Parameters<F>;
-  return function thunk(...params:Param){
-   return async (dispatch:Dispatch)=>{
-     const {request,success.failure}= getUserProfileAsync;
-     dispatch(request(undefined));
-     try{
-      const result = await promsieCreator(...params);
-      dispatch(success(result));
-     }catch(e){
-       dispatch(failure(e));
-     }
-   }
-  }
-}
-import {Dispacth} from 'redux';
-import {AsyncActionCreator} from 'typesafe-actions';
-// createAsyncAction 호출했을때 리턴하는 타입이다.
-
-//type alias
-type AnyAsyncActionCreator =AsyncActionCreator<any,any,any>;
-type AnyPromsieCreator = (...params:any[]) => Promise<any>;
-
-export default function createAsyncThunk
-<A extends AnyAsyncActionCreator,F extends AnyPromsieCreator>
-(asyncActionCreator :A,promsieCreator:F){
-   type Params = Parameters<F>;
-   return function thunk(...params:Params){
-     return async (dispatch:Dispatch)=>{
-       const {reqeust,success,failure} = getUserProfileAsync;
-       dispatch(request(undefined));
-       try{
-        const result = await promsieCreator(...params);
-        dispatch(success(result))
-       }catch(e){
-         dispatch(failure(e))
-       }
-     }
-   }
-}
-export const getUserProfileThunk = createAyncThunk(getUserProfileAsync,getUserProfile);

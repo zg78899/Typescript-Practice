@@ -15,6 +15,7 @@ import createSagaMiddleware from 'redux-saga';
 //4.App 컴포넌트 Provider로 감싸준다. 그 후 store = {store} 넣어줌
 
 
+
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(rootReducer,applyMiddleware(sagaMiddleware));
 

@@ -2,7 +2,8 @@ import { createReducer, action } from 'typesafe-actions'
 // import { GithubProfile } from '../../api/github';
 import { GithubState, GithubAction } from './types';
 import { GET_USER_PROFILE, GET_USER_PROFILE_SUCCESS, GET_USER_PROFILE_ERROR, getUserProfileAsync } from './action';
-import { asyncState, createAsyncReducer,transformToArray} from '../../lib/reducerUtils';
+import { asyncState, createAsyncReducer,transformToArray, transfromToArray} from '../../lib/reducerUtils';
+import createAsyncThunk from '../../lib/CreateAsyncThunk';
 
 // const initialState: GithubState = {
 //   userProfile: {

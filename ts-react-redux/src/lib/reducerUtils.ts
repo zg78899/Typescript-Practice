@@ -149,8 +149,11 @@ export const asyncState  = {
     data:null
   })
 }
+
+
 //types 파일에
 export type GithubAction = ActinoType<typeof action>
+
 // export type GithubState = {
 //   userProfile:{
 //     loading:boolean;
@@ -158,20 +161,19 @@ export type GithubAction = ActinoType<typeof action>
 //     error: Error | null;
 //   }
 // }
-
 export type GithubState  = {
   //첫번째 성공했을때 GithubProfile 두번째 실패 했을때 Error
   userProfile:AsyncState<GithubProfile,Error>;
 }
+
 import {getType} from 'typesafe-actions';
 import { getUserProfileAsync } from '../modules/github';
 import createAsyncThunk from './CreateAsyncThunk';
-import { transform } from 'typescript';
+import { isFunctionDeclaration } from 'typescript';
+
 
 //리듀서를 나눠본다
 type AnyAsyncActionCreator = AsyncActionCreator<any,any,any>;
-
-
 
 export function createAsyncReducer
 <S,AC extends AnyAsyncActionCreator,K extends keyof S>
@@ -228,6 +230,10 @@ export function transforrmToArray<AC extends AnyAsyncActionCreator>(asyncActionC
  return [request,success,failure];
 }
 
+export function transfromToArray<Ac extends AnyAsyncActionCreator>(asyncActionCreator:Ac){
+  const {request,success,failure}  = asyncActionCreator;
+  return [requet,success,failure];
+}
 
 //createReducer의 handleAction을 사용하면 된다.
 
@@ -239,3 +245,65 @@ export function transforrmToArray<AC extends AnyAsyncActionCreator>(asyncActionC
 //   c:3
 // };
 // type key = keyof typeof state  // key = "a" | "b" | "c"가 된다.
+
+type AsyncActionCreator  = AsyncActionCreator<any,any,any>;
+
+export function transformtoArray<AC extends AnyAsyncActionCreator>(asyncActionCreator:AC){
+  const {request,success,failure} = asyncActionCreator;
+  return [request,success,failure];
+}
+export function createAsyncReducer<S,AnyAsyncActionCreator,K extends keyof S>(asyncActionCreator:AC,key:K){
+  return (state:S,action:ActionType<AC>)=>{
+   const [request,success,failure] = 
+   transfromToArray(asyncActionCreator).map(getType);
+
+   switch(action.type){
+     case request:
+       return{
+         ...state,
+         [key]:asyncState.load()
+
+       }
+       case success:
+         return{
+           ...state,
+           [key]:asyncState.success(action.payload)
+         };
+      case failure:
+        return{
+          ...state,
+          [key]:asyncState.error(action.apyload)
+        }
+      default:
+        return state;   
+   }
+  }
+}
+type AsycnState<T,E =any> ={
+  loading:boolean;
+  data:T | null;
+  error: E | null;
+} 
+export const asyncState = {
+initial:<T,E>(initialData?:T):AsyncState<T,E>=>({
+  loading:false,
+  data: initialData ||null,
+  error:null
+
+}),
+load:<T,E>(data?:T):AsyncState<T,E>=>({
+  loading:true,
+  data:data || null,
+  error:null
+}),
+success:<T,E>(data:T)=>({
+  loading:false,
+  data,
+  error:null
+}),
+error:<T,E>(error:E)=>({
+  loading:false,
+  data:null,
+  error
+})
+}
